@@ -25,3 +25,6 @@ A lot of work and sleepless nights were involved in this software, so if this ap
 **Patreon:** https://www.patreon.com/darkguy2008
 
 **Buy me a coffee!:** https://www.buymeacoffee.com/darkguy2008
+
+Made with ♥ from a ![image](https://user-images.githubusercontent.com/6304136/137613744-13c4c90d-6ea4-450d-8fb4-93cfe972dd70.png) in ![image](https://user-images.githubusercontent.com/6304136/137613745-8f0632a0-48cf-4b77-a96b-ee2e7d8496fc.png)
+
