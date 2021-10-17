@@ -8,8 +8,8 @@ Switchie is a virtual desktop pager for Windows inspired by various Linux-based 
 
 A lot of work and sleepless nights were involved in this software, so if this app helps you in any way or another, please consider sending a small donation, it helps a lot in these tough times! 
 
-[<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif">](https://www.paypal.com/donate?hosted_button_id=H2YLSRHBQJ94G)
+**PayPal:** [<img src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif">](https://www.paypal.com/donate?hosted_button_id=H2YLSRHBQJ94G)
 
-https://www.patreon.com/darkguy2008
+**Patreon:** https://www.patreon.com/darkguy2008
 
-https://www.buymeacoffee.com/darkguy2008
+**Buy me a coffee!:** https://www.buymeacoffee.com/darkguy2008
