@@ -7,6 +7,7 @@ namespace Switchie
     static class Program
     {
         public static CancellationToken ApplicationClosing = new CancellationToken();
+        public static WindowsVersion WindowsVersion = new WindowsVersion();
 
         [STAThread]
         static void Main()

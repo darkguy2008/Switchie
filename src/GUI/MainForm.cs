@@ -46,7 +46,7 @@ namespace Switchie
             Name = "frmMain";
             TopMost = true;
             Icon = new System.Drawing.Icon(new MemoryStream(Helpers.GetResourceFromAssembly(typeof(Program), "Switchie.Resources.icon.ico")));
-            Enumerable.Range(0, WindowsVirtualDesktop.Count).ToList().ForEach(x =>
+            Enumerable.Range(0, WindowsVirtualDesktop.GetInstance().Count).ToList().ForEach(x =>
             {
                 VirtualDesktop desktop = new VirtualDesktop(x, this, new Point(_virtualDesktops.Sum(y => y.Size.Width), 0));
                 MouseUp += desktop.OnMouseUp;
@@ -70,7 +70,7 @@ namespace Switchie
 
         private void OnShown(object sender, EventArgs e)
         {
-            WindowsVirtualDesktopManager.PinApplication(Handle);
+            WindowsVirtualDesktopManager.GetInstance().PinApplication(Handle);
             new TaskFactory().StartNew(async () =>
             {
                 while (!Program.ApplicationClosing.IsCancellationRequested)
@@ -82,7 +82,7 @@ namespace Switchie
                             if (_forceAlwaysOnTop)
                                 WindowManager.SetAlwaysOnTop(Handle, _forceAlwaysOnTop);
                             Windows = new ConcurrentBag<Window>(WindowManager.GetOpenWindows());
-                            var hash = $"{Windows.Sum(x => Math.Abs(x.Dimensions.X))}{Windows.Sum(x => Math.Abs(x.Dimensions.Y))}{Windows.Sum(x => x.Dimensions.Width)}{Windows.Sum(x => x.Dimensions.Height)}{Windows.Sum(x => x.IsActive ? 1 : 0)}{Windows.Sum(x => x.VirtualDesktopIndex)}";
+                            var hash = $"{Windows.Sum(x => Math.Abs(x.Dimensions.X))}{Windows.Sum(x => Math.Abs(x.Dimensions.Y))}{Windows.Sum(x => x.Dimensions.Width)}{Windows.Sum(x => x.Dimensions.Height)}{string.Join("", Windows.Select(x => x.IsActive ? 1 : 0))}{string.Join("", Windows.Select(x => x.VirtualDesktopIndex))}";
                             if (hash != _windowsHash)
                             {
                                 _windowsHash = hash;
@@ -92,6 +92,18 @@ namespace Switchie
                         catch { }
                     }));
                     await Task.Delay(1);
+                }
+            });
+            new TaskFactory().StartNew(async () =>
+            {
+                while (!Program.ApplicationClosing.IsCancellationRequested)
+                {
+                    Invoke(new Action(() =>
+                    {
+                        try { Invalidate(); }
+                        catch { }
+                    }));
+                    await Task.Delay(100);
                 }
             });
         }

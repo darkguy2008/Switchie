@@ -35,8 +35,9 @@ namespace Switchie
                 WinAPI.RECT rct = new WinAPI.RECT();
                 WinAPI.GetWindowRect(hWnd, ref rct);
 
+                int index = 0;
                 WinAPI.GetWindowThreadProcessId(hWnd, out uint pid);
-                int index = WindowsVirtualDesktopManager.FromDesktop(WindowsVirtualDesktopManager.FromWindow((IntPtr)hWnd));
+                try { index = WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktopManager.GetInstance().FromWindow((IntPtr)hWnd)); } catch { }
 
                 int hIcon = WinAPI.SendMessage(hWnd, WinAPI.WM_GETICON, WinAPI.ICON_SMALL2, 0);
                 if (hIcon == 0) { hIcon = WinAPI.GetClassLongPtr(hWnd, WinAPI.GCL_HICON); }

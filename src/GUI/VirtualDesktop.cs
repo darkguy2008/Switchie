@@ -12,7 +12,7 @@ namespace Switchie
         public Size Size { get; set; }
         public Point Location { get; set; }
         public int VirtualDesktopIndex { get; set; }
-        public bool IsCurrentActiveDesktop { get => WindowsVirtualDesktopManager.FromDesktop(WindowsVirtualDesktop.Current) == VirtualDesktopIndex; }
+        public bool IsCurrentActiveDesktop { get => WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktop.GetInstance().Current) == VirtualDesktopIndex; }
 
         private DragDropData _dragDropData;
         private Rectangle dragBoxFromMouseDown;
@@ -64,7 +64,7 @@ namespace Switchie
             if (!IsInsideBounds(e.X, e.Y)) return;
             if ((e.Button & MouseButtons.Left) == MouseButtons.Left)
             {
-                WindowsVirtualDesktop.FromIndex(VirtualDesktopIndex).MakeVisible();
+                WindowsVirtualDesktop.GetInstance().FromIndex(VirtualDesktopIndex).MakeVisible();
                 Form.Invalidate();
             }
         }
@@ -106,7 +106,7 @@ namespace Switchie
                 var ddd = (DragDropData)e.Data.GetData(typeof(DragDropData));
                 if (e.Effect == DragDropEffects.Move)
                 {
-                    WindowsVirtualDesktop.FromIndex(VirtualDesktopIndex).MoveWindow(ddd.DraggedWindow.Handle);
+                    WindowsVirtualDesktop.GetInstance().FromIndex(VirtualDesktopIndex).MoveWindow(ddd.DraggedWindow.Handle);
                     Form.Invalidate();
                 }
             }
