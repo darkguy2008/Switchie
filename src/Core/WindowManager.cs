@@ -35,6 +35,10 @@ namespace Switchie
                 WinAPI.RECT rct = new WinAPI.RECT();
                 WinAPI.GetWindowRect(hWnd, ref rct);
 
+                IntPtr nRet;
+                StringBuilder className = new StringBuilder(256);
+                nRet = WinAPI.GetClassName(hWnd, className, className.Capacity);
+
                 int index = 0;
                 WinAPI.GetWindowThreadProcessId(hWnd, out uint pid);
                 try { index = WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktopManager.GetInstance().FromWindow((IntPtr)hWnd)); } catch { }
@@ -48,6 +52,7 @@ namespace Switchie
                     Handle = hWnd,
                     Title = builder.ToString(),
                     ProcessID = pid,
+                    Class = className.ToString(),
                     ZOrder = GetWindowZOrder(hWnd),
                     Icon = hIcon != 0 ? new Bitmap(Icon.FromHandle((IntPtr)hIcon).ToBitmap(), 16, 16) : null,
                     IsActive = hWnd == WinAPI.GetForegroundWindow(),
@@ -57,6 +62,14 @@ namespace Switchie
 
                 return true;
             }, 0);
+
+            string[] classBlacklist = new string[] {
+                "Windows.UI.Core.CoreWindow"
+            };
+            rv = rv
+                .Where(x => x.VirtualDesktopIndex >= 0)
+                .Where(x => !classBlacklist.Contains(x.Class))
+                .ToList();
 
             return rv;
         }

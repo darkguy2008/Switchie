@@ -100,7 +100,11 @@ namespace Switchie
                 {
                     Invoke(new Action(() =>
                     {
-                        try { Invalidate(); }
+                        try
+                        {
+                            Windows = new ConcurrentBag<Window>(WindowManager.GetOpenWindows());
+                            Invalidate();
+                        }
                         catch { }
                     }));
                     await Task.Delay(100);

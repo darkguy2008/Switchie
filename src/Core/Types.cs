@@ -11,6 +11,7 @@ namespace Switchie
         public int ZOrder { get; set; }
         public IntPtr Handle { get; set; }
         public string Title { get; set; }
+        public string Class { get; set; }
         public uint ProcessID { get; set; }
         public Rectangle Dimensions { get; set; }
         public Bitmap Icon { get; set; }
