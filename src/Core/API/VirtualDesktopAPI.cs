@@ -5,6 +5,13 @@ namespace Switchie
     public class WindowsVirtualDesktop
     {
         private static IWindowsVirtualDesktop _instance;
+        public static void Restart()
+        {
+            WindowsVirtualDesktop._instance = null;
+            GetInstance();
+            WindowsVirtualDesktop._instance.Restart();
+        }
+
         public static IWindowsVirtualDesktop GetInstance()
         {
             if (WindowsVirtualDesktop._instance == null)
@@ -20,11 +27,14 @@ namespace Switchie
             }
             return WindowsVirtualDesktop._instance;
         }
+
     }
 
     public class WindowsVirtualDesktopManager
     {
         private static IWindowsVirtualDesktopManager _instance;
+        public static void Restart() => WindowsVirtualDesktopManager._instance = null;
+
         public static IWindowsVirtualDesktopManager GetInstance()
         {
             if (WindowsVirtualDesktopManager._instance == null)

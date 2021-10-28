@@ -148,7 +148,12 @@ namespace Switchie
         protected override void OnPaint(PaintEventArgs e)
         {
             base.OnPaint(e);
-            _virtualDesktops.ForEach(x => x.OnPaint(e));
+            try { _virtualDesktops.ForEach(x => x.OnPaint(e)); }
+            catch
+            {
+                WindowsVirtualDesktop.Restart();
+                WindowsVirtualDesktopManager.Restart();
+            }
         }
     }
 }

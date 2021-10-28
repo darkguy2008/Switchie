@@ -206,6 +206,7 @@ namespace Switchie.VirtualDesktopAPI.Win11
     public class WindowsVirtualDesktop : IWindowsVirtualDesktop
     {
         private static WindowsVirtualDesktopManager _windowsVirtualDesktopManager = new WindowsVirtualDesktopManager();
+        public void Restart() => WindowsVirtualDesktop._windowsVirtualDesktopManager = new WindowsVirtualDesktopManager();
         [DllImport("user32.dll")] private static extern int GetWindowThreadProcessId(IntPtr hWnd, out int lpdwProcessId);
 
         public IIVirtualDesktop ivd { get; set; }

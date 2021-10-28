@@ -20,6 +20,9 @@ namespace Switchie
         {
             List<Window> rv = new List<Window>();
             IntPtr shellWindow = WinAPI.GetShellWindow();
+            string[] classBlacklist = new string[] {
+                "Windows.UI.Core.CoreWindow"
+            };
 
             WinAPI.EnumWindows((IntPtr hWnd, int lParam) =>
             {
@@ -38,10 +41,12 @@ namespace Switchie
                 IntPtr nRet;
                 StringBuilder className = new StringBuilder(256);
                 nRet = WinAPI.GetClassName(hWnd, className, className.Capacity);
+                if (classBlacklist.Contains(className.ToString())) return true;
 
                 int index = 0;
                 WinAPI.GetWindowThreadProcessId(hWnd, out uint pid);
                 try { index = WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktopManager.GetInstance().FromWindow((IntPtr)hWnd)); } catch { }
+                if (index < 0) return true;
 
                 int hIcon = WinAPI.SendMessage(hWnd, WinAPI.WM_GETICON, WinAPI.ICON_SMALL2, 0);
                 if (hIcon == 0) { hIcon = WinAPI.GetClassLongPtr(hWnd, WinAPI.GCL_HICON); }
@@ -62,14 +67,6 @@ namespace Switchie
 
                 return true;
             }, 0);
-
-            string[] classBlacklist = new string[] {
-                "Windows.UI.Core.CoreWindow"
-            };
-            rv = rv
-                .Where(x => x.VirtualDesktopIndex >= 0)
-                .Where(x => !classBlacklist.Contains(x.Class))
-                .ToList();
 
             return rv;
         }

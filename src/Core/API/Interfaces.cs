@@ -15,6 +15,7 @@ namespace Switchie
     public interface IWindowsVirtualDesktop
     {
         int Count { get; }
+        void Restart();
         void MakeVisible();
         void MoveWindow(IntPtr hWnd);
         IIVirtualDesktop ivd { get; set; }
