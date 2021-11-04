@@ -9,6 +9,8 @@ namespace Switchie
 
     public class WindowManager
     {
+        static List<IntPtr> hWndBlacklist = new List<IntPtr>();
+
         static int GetWindowZOrder(IntPtr hWnd)
         {
             var zOrder = -1;
@@ -26,6 +28,7 @@ namespace Switchie
 
             WinAPI.EnumWindows((IntPtr hWnd, int lParam) =>
             {
+                if (hWndBlacklist.Contains(hWnd)) return true;
                 if (hWnd == shellWindow) return true;
                 if (!WinAPI.IsWindowVisible(hWnd)) return true;
 
@@ -45,7 +48,12 @@ namespace Switchie
 
                 int index = 0;
                 WinAPI.GetWindowThreadProcessId(hWnd, out uint pid);
-                try { index = WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktopManager.GetInstance().FromWindow((IntPtr)hWnd)); } catch { }
+                try { index = WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktopManager.GetInstance().FromWindow((IntPtr)hWnd)); }
+                catch
+                {
+                    hWndBlacklist.Add(hWnd);
+                    return true;
+                }
                 if (index < 0) return true;
 
                 int hIcon = WinAPI.SendMessage(hWnd, WinAPI.WM_GETICON, WinAPI.ICON_SMALL2, 0);
