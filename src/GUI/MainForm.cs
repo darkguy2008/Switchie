@@ -131,7 +131,7 @@ namespace Switchie
             {
                 _forceAlwaysOnTop = false;
                 ContextMenuStrip menu = new ContextMenuStrip();
-                Helpers.AddMenuItem(this, menu, new ToolStripMenuItem() { Text = "About..." }, () => { MessageBox.Show("Made by darkguy2008", "About"); _forceAlwaysOnTop = true; });
+                Helpers.AddMenuItem(this, menu, new ToolStripMenuItem() { Text = "About" }, () => { MessageBox.Show($"Switchie{Environment.NewLine}v1.1.4{Environment.NewLine}{Environment.NewLine}Made by darkguy2008", "About"); _forceAlwaysOnTop = true; });
                 Helpers.AddMenuItem(this, menu, new ToolStripMenuItem() { Text = "Exit" }, () => { Environment.Exit(1); });
                 menu.Opened += (ss, ee) => _forceAlwaysOnTop = false;
                 menu.Show(this, PointToClient(Cursor.Position));
