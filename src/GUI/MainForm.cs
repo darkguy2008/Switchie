@@ -13,6 +13,7 @@ namespace Switchie
     {
         private Point dragOffset;
         private bool _isAppPinned = false;
+        private int _activeDesktopIndex = 0;
         private bool _forceAlwaysOnTop = false;
         private string _windowsHash = string.Empty;
         private List<VirtualDesktop> _virtualDesktops = new List<VirtualDesktop>();
@@ -71,7 +72,7 @@ namespace Switchie
 
         private void OnShown(object sender, EventArgs e)
         {
-            new TaskFactory().StartNew(async () =>
+            Task.Run(async () =>
             {
                 while (!Program.ApplicationClosing.IsCancellationRequested)
                 {
@@ -82,7 +83,7 @@ namespace Switchie
                             if (_forceAlwaysOnTop)
                                 WindowManager.SetAlwaysOnTop(Handle, _forceAlwaysOnTop);
                             Windows = new ConcurrentBag<Window>(WindowManager.GetOpenWindows());
-                            var hash = $"{Windows.Sum(x => Math.Abs(x.Dimensions.X))}{Windows.Sum(x => Math.Abs(x.Dimensions.Y))}{Windows.Sum(x => x.Dimensions.Width)}{Windows.Sum(x => x.Dimensions.Height)}{string.Join("", Windows.Select(x => x.IsActive ? 1 : 0))}{string.Join("", Windows.Select(x => x.VirtualDesktopIndex))}";
+                            var hash = $"{_activeDesktopIndex}{Windows.Sum(x => Math.Abs(x.Dimensions.X))}{Windows.Sum(x => Math.Abs(x.Dimensions.Y))}{Windows.Sum(x => x.Dimensions.Width)}{Windows.Sum(x => x.Dimensions.Height)}{string.Join("", Windows.Select(x => x.IsActive ? 1 : 0))}{string.Join("", Windows.Select(x => x.VirtualDesktopIndex))}";
                             if (hash != _windowsHash)
                             {
                                 _windowsHash = hash;
@@ -94,29 +95,30 @@ namespace Switchie
                     await Task.Delay(1);
                 }
             });
-            new TaskFactory().StartNew(async () =>
+            Task.Run(async () =>
             {
                 while (!Program.ApplicationClosing.IsCancellationRequested)
                 {
-                    if (!_isAppPinned)
-                    {
-                        try
-                        {
-                            WindowsVirtualDesktopManager.GetInstance().PinApplication(Handle);
-                            _isAppPinned = true;
-                        }
-                        catch { }
-                    }
                     Invoke(new Action(() =>
                     {
+                        if (!_isAppPinned)
+                        {
+                            try
+                            {
+                                WindowsVirtualDesktopManager.GetInstance().PinApplication(Handle);
+                                _isAppPinned = true;
+                            }
+                            catch { }
+                        }
                         try
                         {
+                            _activeDesktopIndex = WindowsVirtualDesktopManager.GetInstance().FromDesktop(WindowsVirtualDesktop.GetInstance().Current);
                             Windows = new ConcurrentBag<Window>(WindowManager.GetOpenWindows());
                             Invalidate();
                         }
                         catch { }
                     }));
-                    await Task.Delay(100);
+                    await Task.Delay(50);
                 }
             });
         }
