@@ -12,6 +12,7 @@ namespace Switchie
     public class MainForm : Form
     {
         private Point dragOffset;
+        private bool _isAppPinned = false;
         private bool _forceAlwaysOnTop = false;
         private string _windowsHash = string.Empty;
         private List<VirtualDesktop> _virtualDesktops = new List<VirtualDesktop>();
@@ -70,7 +71,6 @@ namespace Switchie
 
         private void OnShown(object sender, EventArgs e)
         {
-            WindowsVirtualDesktopManager.GetInstance().PinApplication(Handle);
             new TaskFactory().StartNew(async () =>
             {
                 while (!Program.ApplicationClosing.IsCancellationRequested)
@@ -98,6 +98,15 @@ namespace Switchie
             {
                 while (!Program.ApplicationClosing.IsCancellationRequested)
                 {
+                    if (!_isAppPinned)
+                    {
+                        try
+                        {
+                            WindowsVirtualDesktopManager.GetInstance().PinApplication(Handle);
+                            _isAppPinned = true;
+                        }
+                        catch { }
+                    }
                     Invoke(new Action(() =>
                     {
                         try
